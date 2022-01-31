@@ -878,7 +878,7 @@ class DeliveryController extends Controller
     {  
         $validatedData = $request->validate([
             'fname' => 'required|string|max:50', 
-            'tel'   => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|max:10', 
+            'tel'   => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|max:12', 
             'carDetail1' => 'required|string|max:100', 
             'carDetail2' => 'required|string|max:100', 
             'carDetail3' => 'required|string|max:100', 
