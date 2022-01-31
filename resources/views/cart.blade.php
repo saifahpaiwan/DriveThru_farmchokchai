@@ -187,6 +187,7 @@
                                 </div> 
                                 <div class="col-md-12">  
                                     <input id="tel" type="text" class="form-control mb-1 @error('tel') is-invalid @enderror" name="tel" required autocomplete="tel" autofocus
+                                    data-toggle="input-mask" data-mask-format="000-000-0000"
                                     value="@if($data['users']->sender_phone!='') {{$data['users']->sender_phone}} @endif" placeholder="หมายเลขโทรศัพท์"> 
                                 </div>  
                                 <div class="col-md-12"> 
@@ -387,12 +388,11 @@
     </form>
 @endsection 
 @section('script') 
+<script src="{{ asset('libs/jquery-mask-plugin/jquery.mask.min.js') }}"></script>
+<script src="{{ asset('libs/autonumeric/autoNumeric-min.js') }}"></script>
+<script src="{{ asset('admin/js/pages/form-masks.init.js') }}"></script>
 <script>
-    function fnonblur(){
-        var val=$('#address').val(); 
-        $('[name=additional_address]').val(val);
-    }
-
+     
     function time_takingblur(){
         var val=$('#time_taking').val(); 
         $('[name=time_takingHDF]').val(val);

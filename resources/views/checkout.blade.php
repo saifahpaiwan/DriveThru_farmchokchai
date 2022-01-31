@@ -191,7 +191,7 @@
         </form>   
 @endsection 
 @section('script') 
-<script src="{{ asset('/libs/dropzone/dropzone.min.js') }}"></script>
+<script src="{{ asset('/libs/dropzone/dropzone.min.js') }}"></script> 
 <script>
     $( "form" ).submit(function( event ) { 
         $('.btn-submit1').prop( "disabled", true ); 
