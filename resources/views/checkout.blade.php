@@ -149,7 +149,7 @@
                                         </div>  
                                         <div class="p-2 d-none d-sm-block mt-3 text-right">  
                                             <div class="text-left "> หากตรวจสอบข้อมูลเรียบร้อยแล้ว คลิก "ยืนยันการสั่งซื้อ" </div>
-                                            <button type="submit" class="btn btn-md btn-dark waves-effect waves-light float-right"> ยืนยันการสั่งซื้อ </button>  
+                                            <button type="submit" class="btn btn-md btn-dark waves-effect waves-light float-right btn-submit1"> ยืนยันการสั่งซื้อ </button>  
                                         </div> 
                                     </div> 
                                 @elseif(session('deliveryForm')==2)
@@ -180,7 +180,7 @@
             <div class="box-fixed-cart d-block d-sm-none"> 
                 <div class="p-2"> 
                     <div class="text-center box-btn-action"> 
-                        <button type="submit" class="btn" style="padding: 0 3rem;"> 
+                        <button type="submit" class="btn btn-submit2" style="padding: 0 3rem;"> 
                             <h4 style="color: #FFF;"> ยืนยันการสั่งซื้อ </h4>    
                         </button>  
                     </div>   
@@ -191,6 +191,14 @@
 @section('script') 
 <script src="{{ asset('/libs/dropzone/dropzone.min.js') }}"></script>
 <script>
+    $( "form" ).submit(function( event ) { 
+        $('.btn-submit1').prop( "disabled", true ); 
+        $('.btn-submit2').prop( "disabled", true ); 
+        setTimeout(function(){
+            $( "form" ).submit();  
+        }, 2000); 
+    }); 
+
     @error('file_upload')     
         $.toast({
             heading:"ผิดผลาด ?",
