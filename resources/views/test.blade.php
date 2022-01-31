@@ -33,6 +33,7 @@
   <button id="btnScanCode" onclick="scanCode()">Scan Code</button>
   <button id="btnLogOut" onclick="logOut()">Log Out</button>
   <button id="btnClose" onclick="closed()">Close</button>
+  TEST
 @endsection 
 @section('script') 
 <script src="<?php echo $base_bn;?>frontend/line_frontend/js/vconsole.min"></script>
