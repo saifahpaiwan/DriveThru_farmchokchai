@@ -636,8 +636,8 @@ class DeliveryController extends Controller
 
     public function confirm_order(Request $request)
     {    
-        $delivery_form="";
-        if($request->delivery_form){
+        $delivery_form=""; $moreDetails="";
+        if(isset($request->delivery_form)){
             if($request->delivery_form==1){ 
                 $delivery_form="โอนเงินผ่านธนาคาร";
                 $validatedData = $request->validate(
@@ -664,20 +664,23 @@ class DeliveryController extends Controller
                 );
             }
         }
+
+        if(isset($request->payPrice)){
+            $moreDetails=$request->payPrice;
+        }
         
-        $moreDetails=$request->payPrice;
         $message="";
-        $discount=0; $total_price=0; $calculate_cost=0; 
-        $deliveryForm=session('deliveryForm');
+        $discount=0; $total_price=0; $calculate_cost=0;  
         $senderForm=3;
         if($senderForm==3){ 
             $senderFormTXT="Drive Thru";  
         }  
+
         $total_op=0; 
         if(session('deliveryCart')){
             if(count(session('deliveryCart'))>0){
-                foreach(session('deliveryCart') as $key=>$row){ 
-                    if($row['session_option']){  
+                foreach(session('deliveryCart') as $key=>$row){  
+                    if(count($row['session_option'])>0){   
                         foreach($row['session_option'] as $row_op){
                             if($row_op['quantity']==0){
                                 $quantity_op=1;
@@ -692,7 +695,7 @@ class DeliveryController extends Controller
         } 
         if(session('calculate_cost')){
             $total_price=session('calculate_cost')['total_price']+$total_op;  
-        }
+        } 
 
         $id=Auth::user()->id;
         $user=User::find($id);
@@ -737,37 +740,39 @@ class DeliveryController extends Controller
         
         $orderId = DB::table('orders')->insertGetId($data); 
         foreach(session('deliveryCart') as $key=>$row){ 
+            $price_total_items=$row['price']*intval($row['quantity']);
             $data_dt = array(
                 "order_id"          => $orderId, 
                 "product_subsid"    => $row['id'],
                 "product_itemsid"   => $row['detail_id'],
                 "quantity"          => $row['quantity'],
                 "moreDetails"       => $row['moreDetails'],  
-                "price_total"       => number_format($row['price']*$row['quantity'], 2),  
+                "price_total"       => $price_total_items,  
                 "created_at"        => new \DateTime(), 
             );
+            $orders_items_id = DB::table('orders_items')->insertGetId($data_dt);
             $message.="\n"; 
-            $message.=$i.". ".$row['proname']." \n ".$row['options']."\n  จำนวน  ".$row['quantity']." รายการ\n"; 
-            $orders_items_id = DB::table('orders_items')->insertGetId($data_dt);  
-            if($row['session_option']){
-                $message.="รายการเพิ่มเติม \n";
-                foreach($row['session_option'] as $row_op){
-                    $data_sd = array(
-                        "order_id"         => $orderId,  
-                        "orders_items_id"  => $orders_items_id,
-                        "option_id"        => $row_op['id'], 
-                        "quantity"         => $row_op['quantity'], 
-                        "price_total"      => number_format($row_op['price'], 2),  
-                        "created_at"       => new \DateTime(),  
-                    );  
-                    $message.="+ ".$row_op['name'];
-                    if($row_op['quantity']>0){
-                        $message.=" จำนวน ".$row_op['quantity']." รายการ";
-                    }
-                    $message.="\n";
-                    
-                    DB::table('orders_option')->insert($data_sd); 
-                } 
+            $message.=$i.". ".$row['proname']." \n ".$row['options']."\n  จำนวน  ".$row['quantity']." รายการ\n";  
+            if(isset($row['session_option'])){
+                if(count($row['session_option'])>0){
+                    $message.="รายการเพิ่มเติม \n";
+                    foreach($row['session_option'] as $row_op){
+                        $data_sd = array(
+                            "order_id"         => $orderId,  
+                            "orders_items_id"  => $orders_items_id,
+                            "option_id"        => $row_op['id'], 
+                            "quantity"         => $row_op['quantity'], 
+                            "price_total"      => number_format($row_op['price'], 2),  
+                            "created_at"       => new \DateTime(),  
+                        );  
+                        DB::table('orders_option')->insert($data_sd); 
+                        $message.="+ ".$row_op['name'];
+                        if($row_op['quantity']>0){
+                            $message.=" จำนวน ".$row_op['quantity']." รายการ";
+                        }
+                        $message.="\n"; 
+                    } 
+                }
             }
 
             // ================================unset session cart============================= //
@@ -781,8 +786,8 @@ class DeliveryController extends Controller
             $i++;
         }  
         //===================================================================// 
-        if($deliveryForm){
-            if($deliveryForm==1){
+        if(isset($request->delivery_form)){
+            if($request->delivery_form==1){
                 if(!empty($request->file('file_upload'))){
                     $uploade_location = 'images/payment/delivery/';  
                     $img_main = $request->file('file_upload');

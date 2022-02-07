@@ -173,12 +173,19 @@
                                             </div> 
                                         </div>
                                     </div>
+                                    <div class="p-2 d-none d-sm-block mt-3 text-right">  
+                                        <div class="text-left "> หากตรวจสอบข้อมูลเรียบร้อยแล้ว คลิก "ยืนยันการสั่งซื้อ" </div>
+                                        <button type="submit" class="btn btn-md btn-dark waves-effect waves-light float-right btn-submit1"> 
+                                            <span class="txt-submit1"> ยืนยันการสั่งซื้อ </span>
+                                        </button>  
+                                    </div> 
                                 @endif 
                             @endif
                         </div>
                     </div>
                 </div>
             </section>  
+
             <div class="box-fixed-cart d-block d-sm-none"> 
                 <div class="p-2"> 
                     <div class="text-center box-btn-action"> 
@@ -196,11 +203,9 @@
     $( "form" ).submit(function( event ) { 
         $('.btn-submit1').prop( "disabled", true ); 
         $('.btn-submit2').prop( "disabled", true ); 
-        $('.txt-submit1').html('<i class="mdi-spin"></i> กรุณารอสักครู่...');
-        $('.txt-submit2').html('<i class="mdi-spin"></i> กรุณารอสักครู่...');
-        setTimeout(function(){
-            $( "form" ).submit();  
-        }, 2000); 
+        $('.txt-submit1').html('<i class="mdi mdi-spin mdi-loading"></i> กรุณารอสักครู่...');
+        $('.txt-submit2').html('<i class="mdi mdi-spin mdi-loading"></i> กรุณารอสักครู่...');
+        $( "form" ).submit();
     }); 
 
     @error('file_upload')     
